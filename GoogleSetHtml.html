@@ -1,0 +1,768 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Google</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:white;
+    overflow:hidden;
+    color:#202124;
+}
+
+/* =========================
+   PANTALLAS
+========================= */
+
+.screen{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    box-sizing:border-box;
+}
+
+.hidden{
+    display:none !important;
+}
+
+/* =========================
+   SETUP
+========================= */
+
+#setup-screen{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+#setup-screen input{
+    width:300px;
+    padding:14px;
+    font-size:20px;
+    margin-bottom:20px;
+}
+
+#setup-screen button{
+    padding:14px 24px;
+    font-size:18px;
+    cursor:pointer;
+}
+
+/* =========================
+   GOOGLE HOME
+========================= */
+
+#google-screen{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+#google-logo-home{
+    width:320px;
+    margin-bottom:35px;
+}
+
+#search-container{
+    width:700px;
+}
+
+#search-input{
+    width:100%;
+    padding:16px 24px;
+    border-radius:30px;
+    border:1px solid #dcdcdc;
+    font-size:26px;
+    box-sizing:border-box;
+    outline:none;
+}
+
+#search-input:focus{
+    box-shadow:0 1px 6px rgba(32,33,36,.28);
+}
+
+#search-button{
+    margin-top:25px;
+    padding:12px 30px;
+    border:none;
+    border-radius:6px;
+    background:#f8f9fa;
+    font-size:18px;
+    cursor:pointer;
+}
+
+/* =========================
+   RESULTADOS
+========================= */
+
+#results-screen{
+    overflow-y:auto;
+    background:white;
+}
+
+/* TOP BAR */
+
+#top-bar{
+    height:80px;
+    display:flex;
+    align-items:center;
+    border-bottom:1px solid #dadce0;
+    padding:0 30px;
+    box-sizing:border-box;
+}
+
+#google-logo-results{
+    width:92px;
+    margin-right:30px;
+}
+
+#results-query{
+    width:760px;
+    padding:14px 22px;
+    border-radius:30px;
+    border:1px solid #dcdcdc;
+    font-size:24px;
+    outline:none;
+}
+
+/* CATEGORIES */
+
+#categories{
+    display:flex;
+    gap:28px;
+    margin-left:155px;
+    padding-top:14px;
+    padding-bottom:10px;
+    font-size:18px;
+    color:#5f6368;
+    border-bottom:1px solid #dadce0;
+}
+
+.selected-category{
+    color:black;
+    border-bottom:3px solid black;
+    padding-bottom:10px;
+}
+
+/* RESULTS AREA */
+
+#results-container{
+    margin-left:240px;
+    margin-top:40px;
+    width:700px;
+}
+
+.section-title{
+    font-size:42px;
+    margin-bottom:25px;
+}
+
+.separator{
+    height:1px;
+    background:#dadce0;
+    margin-bottom:25px;
+}
+
+/* RESULT */
+
+.result{
+    margin-bottom:55px;
+    cursor:pointer;
+}
+
+.result-top{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+}
+
+.result-icons{
+    margin-top:3px;
+}
+
+.result-icons img{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.result-info{
+    flex:1;
+}
+
+.result-source{
+    font-size:18px;
+    margin-bottom:4px;
+}
+
+.result-url{
+    font-size:16px;
+    color:#1a0dab;
+    margin-bottom:10px;
+}
+
+.result-title{
+    color:#1a0dab;
+    font-size:34px;
+    margin-bottom:12px;
+    line-height:1.2;
+}
+
+.result-description{
+    font-size:24px;
+    line-height:1.5;
+    color:#4d5156;
+}
+
+/* TOGGLE SPONSORED */
+
+#toggle-sponsored{
+    display:block;
+    width:100%;
+    margin-top:10px;
+    margin-bottom:30px;
+    cursor:pointer;
+}
+
+/* ADMIN BUTTON */
+
+#admin-button{
+    position:fixed;
+    top:0;
+    left:0;
+    width:50px;
+    height:50px;
+    opacity:0;
+    z-index:9999;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="admin-button"></div>
+
+<!-- =========================
+     SETUP
+========================= -->
+
+<div id="setup-screen" class="screen">
+
+    <h2>Configuración experimento</h2>
+
+    <input
+        type="text"
+        id="participant-id"
+        placeholder="ID participante"
+    >
+
+    <button id="start-button">
+        Comenzar experimento
+    </button>
+
+</div>
+
+<!-- =========================
+     GOOGLE HOME
+========================= -->
+
+<div id="google-screen" class="screen hidden">
+
+    <img src="google_logo.png" id="google-logo-home">
+
+    <div id="search-container">
+
+        <input
+            type="text"
+            id="search-input"
+            autocomplete="off"
+        >
+
+        <div style="text-align:center;">
+
+            <button id="search-button">
+                Buscar con Google
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     RESULTADOS
+========================= -->
+
+<div id="results-screen" class="screen hidden">
+
+    <div id="top-bar">
+
+        <img src="google_logo.png" id="google-logo-results">
+
+        <input
+            type="text"
+            id="results-query"
+            readonly
+        >
+
+    </div>
+
+    <div id="categories">
+
+        <div class="selected-category">Todo</div>
+        <div>Videos cortos</div>
+        <div>Videos</div>
+        <div>Imágenes</div>
+        <div>Shopping</div>
+        <div>Noticias</div>
+        <div>Más</div>
+        <div>Herramientas</div>
+
+    </div>
+
+    <div id="results-container">
+
+        <div class="section-title">
+            Resultados patrocinados
+        </div>
+
+        <div class="separator"></div>
+
+        <!-- PATROCINADO -->
+
+        <div
+            class="result"
+            id="patrocinado-result"
+            onclick="openResult('patrocinado')"
+        >
+
+            <div class="result-top">
+
+                <div class="result-icons">
+
+                    <img src="patrocinado.png">
+
+                </div>
+
+                <div class="result-info">
+
+                    <div class="result-source">
+                        Anuncio · Patrocinado
+                    </div>
+
+                    <div class="result-url">
+                        www.juegos.com/cartas/set
+                    </div>
+
+                    <div class="result-title">
+                        Aprende a jugar al SET - El juego de lógica y percepción
+                    </div>
+
+                    <div class="result-description">
+                        Lo que tenés que saber para poder descubrir cuándo un conjunto de cartas forman un SET.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <img
+            src="OcultarPatrocinado.png"
+            id="toggle-sponsored"
+            onclick="toggleSponsored()"
+        >
+
+        <!-- OFICIAL -->
+
+        <div class="result" onclick="openResult('oficial')">
+
+            <div class="result-top">
+
+                <div class="result-icons">
+
+                    <img src="oficial.png">
+
+                </div>
+
+                <div class="result-info">
+
+                    <div class="result-source">
+                        Aprendé a jugar al set
+                    </div>
+
+                    <div class="result-url">
+                        www.juegoset.edu/como-jugar
+                    </div>
+
+                    <div class="result-title">
+                        Cómo jugar al juego de cartas SET (reglas básicas)
+                    </div>
+
+                    <div class="result-description">
+                        Aprendé las reglas del SET y cómo identificar combinaciones de cartas.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- BLOG -->
+
+        <div class="result" onclick="openResult('blog')">
+
+            <div class="result-top">
+
+                <div class="result-icons">
+
+                    <img src="blog.png">
+
+                </div>
+
+                <div class="result-info">
+
+                    <div class="result-source">
+                        Descubrí como se juega al SET
+                    </div>
+
+                    <div class="result-url">
+                        www.juegosparavos-blog.net/x193
+                    </div>
+
+                    <div class="result-title">
+                        Te explico cómo jugar al SET
+                    </div>
+
+                    <div class="result-description">
+                        Guía con las reglas del juego SET y cómo reconocer combinaciones de cartas durante una partida.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* =========================
+   VARIABLES
+========================= */
+
+let participantID = "";
+let searchQuery = "";
+
+let sponsoredVisible = true;
+let sponsoredWasHidden = false;
+
+let googleScreenStartTime = 0;
+let resultsScreenStartTime = 0;
+
+/* =========================
+   START EXPERIMENT
+========================= */
+
+function startExperiment(){
+
+    participantID =
+        document
+        .getElementById("participant-id")
+        .value
+        .trim()
+        .padStart(3,"0");
+
+    if(participantID === ""){
+
+        alert("Ingresar ID");
+        return;
+    }
+
+    document
+        .getElementById("setup-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("google-screen")
+        .classList.remove("hidden");
+
+    googleScreenStartTime = Date.now();
+
+    setTimeout(() => {
+
+        document
+            .getElementById("search-input")
+            .focus();
+
+    },200);
+}
+
+/* =========================
+   RUN SEARCH
+========================= */
+
+function runSearch(){
+
+    const input =
+        document.getElementById("search-input");
+
+    searchQuery =
+        input.value.trim();
+
+    const tiempoEscritura =
+    resultsScreenStartTime - googleScreenStartTime;
+
+const tiempoDecision =
+    Date.now() - resultsScreenStartTime;
+    if(searchQuery === ""){
+
+        alert("Escribí algo");
+        return;
+    }
+
+    document
+        .getElementById("google-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("results-screen")
+        .classList.remove("hidden");
+
+    resultsScreenStartTime = Date.now();
+
+    document
+        .getElementById("results-query")
+        .value = searchQuery;
+}
+
+/* =========================
+   OPEN RESULT
+========================= */
+async function openResult(resultType){
+
+    await saveFinalData(resultType);
+
+    setTimeout(() => {
+
+        window.location.href =
+            "https://set-game.my.canva.site/texto";
+
+    },500);
+}
+
+/* =========================
+   TOGGLE SPONSORED
+========================= */
+
+function toggleSponsored(){
+
+    const sponsored =
+        document.getElementById("patrocinado-result");
+
+    const button =
+        document.getElementById("toggle-sponsored");
+
+    if(sponsoredVisible){
+
+        sponsored.style.display = "none";
+
+        button.src =
+            "MostrarPatrocinado.png";
+
+        sponsoredVisible = false;
+
+        sponsoredWasHidden = true;
+
+    }else{
+
+        sponsored.style.display = "block";
+
+        button.src =
+            "OcultarPatrocinado.png";
+
+        sponsoredVisible = true;
+    }
+}
+
+/* =========================
+   SAVE FINAL DATA
+========================= */
+
+async function saveFinalData(resultType){
+
+    const tiempoEscritura =
+        resultsScreenStartTime -
+        googleScreenStartTime;
+
+    const tiempoDecision =
+        Date.now() -
+        resultsScreenStartTime;
+
+    const data = {
+
+        id: participantID,
+
+        prompt: searchQuery,
+
+        oculto_patrocinado:
+            sponsoredWasHidden ? "si" : "no",
+
+        link_elegido: resultType,
+
+        tiempo_escritura_ms:
+            tiempoEscritura,
+
+        tiempo_decision_ms:
+            tiempoDecision
+    };
+
+    saveLocally(data);
+
+    await saveOnline(data);
+}
+
+/* =========================
+   LOCAL SAVE
+========================= */
+
+function saveLocally(data){
+
+    let existing =
+        JSON.parse(
+            localStorage.getItem("experimentData") || "[]"
+        );
+
+    existing.push(data);
+
+    localStorage.setItem(
+        "experimentData",
+        JSON.stringify(existing)
+    );
+}
+
+/* =========================
+   GOOGLE FORMS SAVE
+========================= */
+
+async function saveOnline(data){
+
+    const formURL =
+        "https://docs.google.com/forms/d/e/1FAIpQLSfWhXQuBj6mn4k3qqV1mxYsc8M0P1Q959KRTwBcq_W-nES9HA/formResponse";
+
+    const formData = new FormData();
+
+    formData.append(
+        "entry.1100679798",
+        data.id
+    );
+
+    formData.append(
+        "entry.1328084621",
+        data.prompt
+    );
+
+    formData.append(
+        "entry.2063640890",
+        data.oculto_patrocinado
+    );
+
+    formData.append(
+        "entry.1440793598",
+        data.link_elegido
+    );
+
+    formData.append(
+        "entry.1498625396",
+        data.tiempo_escritura_ms
+    );
+
+    formData.append(
+        "entry.2029101416",
+        data.tiempo_decision_ms
+    );
+
+    try{
+
+        await fetch(formURL,{
+
+            method:"POST",
+
+            mode:"no-cors",
+
+            body:formData
+        });
+
+        console.log("Datos enviados");
+
+    }catch(error){
+
+        console.log(error);
+    }
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+document
+.getElementById("start-button")
+.addEventListener("click", startExperiment);
+
+document
+.getElementById("search-button")
+.addEventListener("click", runSearch);
+
+/* ENTER */
+
+document
+.getElementById("search-input")
+.addEventListener("keydown", function(event){
+
+    if(event.key === "Enter"){
+        runSearch();
+    }
+});
+
+/* =========================
+   ADMIN BUTTON
+========================= */
+
+document
+.getElementById("admin-button")
+.addEventListener("click", function(){
+
+    console.log(
+        localStorage.getItem("experimentData")
+    );
+
+    alert("Datos locales mostrados en consola");
+});
+
+</script>
+
+</body>
+</html>
+```
