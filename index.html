@@ -761,6 +761,48 @@ document
     alert("Datos locales mostrados en consola");
 });
 
+    /* =========================
+   FULLSCREEN (AGREGADO - FIX SEGURO)
+========================= */
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    let tapCount = 0;
+    let tapTimer = null;
+
+    const zone = document.getElementById("fs-toggle-zone");
+
+    if(zone){
+
+        zone.addEventListener("click", () => {
+
+            tapCount++;
+
+            if (tapTimer) clearTimeout(tapTimer);
+
+            tapTimer = setTimeout(() => {
+                tapCount = 0;
+            }, 600);
+
+            if (tapCount === 3) {
+                toggleFullscreen();
+                tapCount = 0;
+            }
+        });
+    }
+
+    function toggleFullscreen(){
+
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+});
+
+    
 </script>
 
 </body>
