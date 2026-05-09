@@ -814,13 +814,32 @@ document
 
 async function toggleFullscreen(){
 
-    if(!document.fullscreenElement){
+    const elem = document.documentElement;
 
-        await document.documentElement.requestFullscreen();
+    if(
+        !document.fullscreenElement &&
+        !document.webkitFullscreenElement
+    ){
+
+        if(elem.requestFullscreen){
+
+            elem.requestFullscreen();
+
+        }else if(elem.webkitRequestFullscreen){
+
+            elem.webkitRequestFullscreen();
+        }
 
     }else{
 
-        await document.exitFullscreen();
+        if(document.exitFullscreen){
+
+            document.exitFullscreen();
+
+        }else if(document.webkitExitFullscreen){
+
+            document.webkitExitFullscreen();
+        }
     }
 }
 
