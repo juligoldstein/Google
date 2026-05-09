@@ -250,6 +250,25 @@ body{
     z-index:9999;
 }
 
+/* FULLSCREEN CORNER */
+
+#fullscreen-corner{
+
+    position:fixed;
+
+    top:0;
+
+    right:0;
+
+    width:80px;
+
+    height:80px;
+
+    z-index:99999;
+
+    background:transparent;
+}
+
 </style>
 
 </head>
@@ -257,6 +276,8 @@ body{
 <body>
 
 <div id="admin-button"></div>
+
+<div id="fullscreen-corner"></div>
 
 <!-- =========================
      SETUP
@@ -761,48 +782,48 @@ document
     alert("Datos locales mostrados en consola");
 });
 
-    /* =========================
-   FULLSCREEN (AGREGADO - FIX SEGURO)
+/* =========================
+   FULLSCREEN TRIPLE CLICK
 ========================= */
 
-document.addEventListener("DOMContentLoaded", function(){
+let fullscreenClicks = 0;
 
-    let tapCount = 0;
-    let tapTimer = null;
+let fullscreenTimer = null;
 
-    const zone = document.getElementById("fs-toggle-zone");
+document
+.getElementById("fullscreen-corner")
+.addEventListener("click", async function(){
 
-    if(zone){
+    fullscreenClicks++;
 
-        zone.addEventListener("click", () => {
+    clearTimeout(fullscreenTimer);
 
-            tapCount++;
+    fullscreenTimer = setTimeout(() => {
 
-            if (tapTimer) clearTimeout(tapTimer);
+        fullscreenClicks = 0;
 
-            tapTimer = setTimeout(() => {
-                tapCount = 0;
-            }, 600);
+    },700);
 
-            if (tapCount === 3) {
-                toggleFullscreen();
-                tapCount = 0;
-            }
-        });
+    if(fullscreenClicks >= 3){
+
+        fullscreenClicks = 0;
+
+        toggleFullscreen();
     }
-
-    function toggleFullscreen(){
-
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-        } else {
-            document.exitFullscreen();
-        }
-    }
-
 });
 
-    
+async function toggleFullscreen(){
+
+    if(!document.fullscreenElement){
+
+        await document.documentElement.requestFullscreen();
+
+    }else{
+
+        await document.exitFullscreen();
+    }
+}
+
 </script>
 
 </body>
